@@ -1,12 +1,15 @@
-MAIN = main
-MAIN_DIR = src/
+TARGET = main
+TARGET_DIR = src/
+BIN_DIR = bin/
+SDL3_CONFIG = `pkg-config sdl3 --cflags --libs` 
+SDL2_CONFIG = `sdl2-config --cflags --libs`
 
 build:
-	gcc -o $(MAIN) $(MAIN_DIR)$(MAIN).c `sdl2-config --cflags --libs`
+	gcc -o $(BIN_DIR)$(TARGET) $(TARGET_DIR)$(TARGET).c $(SDL3_CONFIG)
 
 run:
-	# $(MAIN_DIR)./main
-	./$(MAIN)
+	$(BIN_DIR)./main
+	# ./$(MAIN)
 
 clean: 
 	rm $(MAIN)
