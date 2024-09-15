@@ -1,4 +1,4 @@
-MAIN = main
+MAIN = en-chess
 MAIN_DIR = src/
 
 build:
