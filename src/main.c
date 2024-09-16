@@ -2,6 +2,7 @@
 #include "definitons.h"
 #include "lifecycle.h"
 #include "render.h"
+#include "load.h"
 
 int main() {
   Game.init();
@@ -26,7 +27,8 @@ int main() {
       }
     }
 
-    render();
+    svg2Tex();
+    /*render();*/
 
   }
   Game.quit();

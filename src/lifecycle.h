@@ -39,7 +39,9 @@ Game.screen.window = SDL_CreateWindow(
 		name,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		w, h, 0 
+		w, 
+    h, 
+    SDL_WINDOW_RESIZABLE
 	);
 
   if(Game.screen.window == NULL) {

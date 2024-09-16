@@ -2,7 +2,6 @@
 
 #define RENDER_H
 #include "definitons.h"
-#include <SDL2/SDL_render.h>
 
 void render() {
   printf("render\n");
@@ -16,6 +15,10 @@ void render() {
   /*SDL_RenderClear(Game.screen.renderer);*/
   SDL_RenderPresent(Game.screen.renderer);
 }
+
+/*void renderSVG() {*/
+/**/
+/*}*/
 
 #endif
 

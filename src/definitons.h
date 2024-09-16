@@ -3,6 +3,7 @@
 #define DEFINITONS_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,6 +14,12 @@
 #define WINDOW_NAME "En-Chess" 
 
 typedef char Board[8][8];
+
+typedef struct {
+  SDL_Texture *tex;
+  int width;
+  int height;
+} Image;
 
 typedef struct {
   Board board;
@@ -38,5 +45,12 @@ GameInstance Game;
 void init(void);
 void quit(void);
 void render(void);
+
+void renderSVG(Image image, int x, int y);
+/*
+ * Render an SVG image in a x, y position
+ */
+
+void svg2Tex();
 
 #endif
