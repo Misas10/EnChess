@@ -9,6 +9,7 @@ void render() {
   SDL_RenderPresent(Game.screen.renderer);
 }
 
+// TODO: Optimize, and only load all the necessary files once
 void renderChessBoard(int width, int height) {
   /*light */
   int squareSize = WINDOW_WIDTH / 8;
