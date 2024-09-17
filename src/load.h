@@ -3,7 +3,6 @@
 
 #include "definitons.h"
 
-
 Image svg2Tex(char *fileName, int width, int height) {
 
   // Create RAW svg data
@@ -25,6 +24,8 @@ Image svg2Tex(char *fileName, int width, int height) {
     width,
     height
   };
+
+  SDL_FreeSurface(surface);
 
   return image;
 }

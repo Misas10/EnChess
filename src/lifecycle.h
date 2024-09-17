@@ -71,6 +71,12 @@ Game.screen.window = SDL_CreateWindow(
 void quit(void){
   SDL_DestroyWindow(Game.screen.window);
   SDL_DestroyRenderer(Game.screen.renderer);
+
+  SDL_DestroyTexture(lightSquare.tex);
+  SDL_DestroyTexture(darkSquare.tex);
+
+  SDL_DestroyTexture(lightPawn.tex);
+  SDL_DestroyTexture(darkPawn.tex);
   SDL_Quit(); 
 };
 
