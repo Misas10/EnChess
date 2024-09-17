@@ -12,6 +12,7 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
 #define WINDOW_NAME "En-Chess" 
+#define __ASSETS__ "src/assets/" 
 
 typedef char Board[8][8];
 
@@ -40,17 +41,27 @@ typedef struct {
    GameData data;
 } GameInstance;
 
-GameInstance Game;
+extern GameInstance Game;
+
+Image lightSquare, darkSquare, lightPawn, darkPawn;
 
 void init(void);
 void quit(void);
 void render(void);
 
-void renderSVG(Image image, int x, int y);
+/*void renderSVG(Image image, int x, int y);*/
 /*
  * Render an SVG image in a x, y position
  */
 
-void svg2Tex();
+Image svg2Tex(char *fileName, int width, int height);
+/*
+ * Convert svg to a texture for rendering 
+ */
+
+void renderChessBoard(int width, int height);
+/*
+ *  
+ */
 
 #endif

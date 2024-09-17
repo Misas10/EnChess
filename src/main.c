@@ -27,8 +27,8 @@ int main() {
       }
     }
 
-    svg2Tex();
-    /*render();*/
+    render();
+    /*SDL_*/
 
   }
   Game.quit();

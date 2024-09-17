@@ -3,8 +3,6 @@
 #define LIFECYCLE_H
 
 #include "definitons.h"
-#include <SDL2/SDL_video.h>
-#include <stdio.h>
 
 GameInstance Game = {
   SDL_FALSE,
