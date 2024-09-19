@@ -3,6 +3,28 @@
 
 #include "definitons.h"
 
+void loadTextures() {
+  
+  int squareSize = Game.screen.w / 8;
+  int pieceSize = squareSize * .8;
+
+  lightSquare = svg2Tex(__ASSETS__ "light.svg", squareSize, squareSize);
+  lightPawn = svg2Tex(__ASSETS__ "pieces/p.svg", pieceSize, pieceSize);
+  lightQueen = svg2Tex(__ASSETS__ "pieces/q.svg", pieceSize, pieceSize);
+  lightKing = svg2Tex(__ASSETS__ "pieces/k.svg", pieceSize, pieceSize);
+  lightKnight = svg2Tex(__ASSETS__ "pieces/n.svg", pieceSize, pieceSize);
+  lightBishop = svg2Tex(__ASSETS__ "pieces/b.svg", pieceSize, pieceSize);
+  lightRook = svg2Tex(__ASSETS__ "pieces/r.svg", pieceSize, pieceSize);
+
+  darkSquare = svg2Tex(__ASSETS__ "dark.svg", squareSize, squareSize);
+  darkPawn = svg2Tex(__ASSETS__ "pieces/pd.svg", pieceSize, pieceSize);
+  darkQueen = svg2Tex(__ASSETS__ "pieces/qd.svg", pieceSize, pieceSize);
+  darkKing = svg2Tex(__ASSETS__ "pieces/kd.svg", pieceSize, pieceSize);
+  darkKnight = svg2Tex(__ASSETS__ "pieces/nd.svg", pieceSize, pieceSize);
+  darkBishop = svg2Tex(__ASSETS__ "pieces/bd.svg", pieceSize, pieceSize);
+  darkRook = svg2Tex(__ASSETS__ "pieces/rd.svg", pieceSize, pieceSize);
+}
+
 Image svg2Tex(char *fileName, int width, int height) {
 
   // Create RAW svg data

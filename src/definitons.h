@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_stdinc.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -22,8 +23,11 @@ typedef struct {
   int height;
 } Image;
 
+typedef enum { PLAYER = 1, COMPUTER = 0 } Turn;
+
 typedef struct {
-  Board board;
+  Turn turn;
+  SDL_bool isReversed;
 } GameData;
 
 typedef struct {
@@ -38,12 +42,15 @@ typedef struct {
 
    void (*init)(void);
    void (*quit)(void);
-   GameData data;
 } GameInstance;
 
+extern GameData gameData;
 extern GameInstance Game;
+extern Board boardInfo;
 
-Image lightSquare, darkSquare, lightPawn, darkPawn;
+Image 
+  lightSquare, lightPawn, lightQueen, lightKing, lightKnight, lightRook, lightBishop, 
+  darkSquare, darkPawn, darkQueen, darkKing, darkKnight, darkRook, darkBishop;
 
 void init(void);
 void quit(void);
@@ -63,5 +70,10 @@ void renderChessBoard(int width, int height);
 /*
  *  
  */
+
+void renderImage(Image image, int x, int y);
+
+
+void loadTextures();
 
 #endif

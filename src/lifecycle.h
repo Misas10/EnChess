@@ -1,8 +1,19 @@
 #ifndef LIFECYCLE_H
-
 #define LIFECYCLE_H
 
 #include "definitons.h"
+#include <SDL2/SDL_stdinc.h>
+
+Board boardInfo = {
+  {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'},
+  {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
+  {'.', '.', '.', '.', '.', '.', '.', '.'},
+  {'.', '.', '.', '.', '.', '.', '.', '.'},
+  {'.', '.', '.', '.', '.', '.', '.', '.'},
+  {'.', '.', '.', '.', '.', '.', '.', '.'},
+  {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
+  {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
+};
 
 GameInstance Game = {
   SDL_FALSE,
@@ -15,12 +26,17 @@ GameInstance Game = {
   },
   init,
   quit,
-  {}
+};
+
+GameData gameData = {
+  PLAYER,
+  SDL_FALSE
 };
 
 void newGame();
 
 void init(void){
+
 
   if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL Error", SDL_GetError(), NULL);
@@ -28,17 +44,14 @@ void init(void){
   }
 
   printf("Starting\n");
-  unsigned int w = Game.screen.w;
-	unsigned int h = Game.screen.h;
-	const char* name = Game.screen.name;
 
   // Starting the window
 Game.screen.window = SDL_CreateWindow(
-		name,
+		Game.screen.name,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		w, 
-    h, 
+		Game.screen.w, 
+    Game.screen.h, 
     SDL_WINDOW_RESIZABLE
 	);
 
@@ -66,6 +79,8 @@ Game.screen.window = SDL_CreateWindow(
 	 }
 
   Game.isRunning = SDL_TRUE;
+
+  /*memmove(Game.data.board, boardData, sizeof(Board));*/
 };
 
 void quit(void){

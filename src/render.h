@@ -2,6 +2,7 @@
 
 #define RENDER_H
 #include "definitons.h"
+#include <stdio.h>
 
 void render() {
   renderChessBoard(Game.screen.w, Game.screen.h);
@@ -9,44 +10,116 @@ void render() {
   SDL_RenderPresent(Game.screen.renderer);
 }
 
-// TODO: Optimize, and only load all the necessary files once
-void renderChessBoard(int width, int height) {
-  /*light */
-  int squareSize = WINDOW_WIDTH / 8;
+void renderImage(Image image, int x, int y) {
 
-  lightSquare = svg2Tex(__ASSETS__ "light.svg", squareSize, squareSize);
-  darkSquare = svg2Tex(__ASSETS__ "dark.svg", squareSize, squareSize);
+  SDL_Rect rect;
+  rect.x = x;
+  rect.y = y;
+  rect.w = image.width;
+  rect.h = image.height;
 
-  lightPawn = svg2Tex(__ASSETS__ "pieces/p.svg", squareSize / 2, squareSize / 2);
-  darkPawn = svg2Tex(__ASSETS__ "pieces/pd.svg", squareSize / 2, squareSize / 2);
+  SDL_RenderCopy(Game.screen.renderer, image.tex, NULL, &rect);
+}
 
-  SDL_Rect squareRect;
-  squareRect.w = lightSquare.width;
-  squareRect.h = lightSquare.height;
+void renderPiece(char code, int x, int y) {
 
-  SDL_Rect pieceRect; 
-  pieceRect.w = lightPawn.width;
-  pieceRect.h = lightPawn.height;
 
-  for(int line = 0; line < 8; line++){
+  switch (code) {
+    case 'p':
+      renderImage(lightPawn, x, y);
+      break;
 
-    for (int col = 0; col < 8; col++) {
-      bool isLight = (line + col) % 2 == 0;
-      Image square, piece;
+    case 'q':
+      renderImage(lightQueen, x, y);
+      break;
 
-      if(isLight)
-        square = lightSquare;
+    case 'k':
+      renderImage(lightKing, x, y);
+      break;
 
-      else
-        square = darkSquare;
+    case 'n':
+      renderImage(lightKnight, x, y);
+      break;
 
-      squareRect.x = line * square.width;
-      squareRect.y = col * square.height;
+    case 'b':
+      renderImage(lightBishop, x, y);
+      break;
 
-      SDL_RenderCopy(Game.screen.renderer, square.tex, NULL, &squareRect);
-      /*SDL_RenderCopy(Game.screen.renderer, piece.tex, NULL, &pieceRect);*/
-    }
+    case 'r':
+      renderImage(lightRook, x, y);
+      break;
+
+    case 'P':
+      renderImage(darkPawn, x, y);
+      break;
+
+    case 'Q':
+      renderImage(darkQueen, x, y);
+      break;
+
+    case 'K':
+      renderImage(darkKing, x, y);
+      break;
+
+    case 'N':
+      renderImage(darkKnight, x, y);
+      break;
+
+    case 'B':
+      renderImage(darkBishop, x, y);
+      break;
+
+    case 'R':
+      renderImage(darkRook, x, y);
+      break;
+
+    default:
+      printf("ERROR: piece code %c is invalid!", code);
+      break;
   }
+}
+
+void aux(int line, int col) {
+    bool isLight = (line + col) % 2 == 0;
+
+    /*if(gameData.isReversed)*/
+    /*  isLight = !isLight;*/
+
+    Image square = lightSquare;
+
+    if(!isLight)
+      square = darkSquare;
+
+    int pos_x = gameData.isReversed ? (7 - col) * square.width : col * square.width;
+    int pos_y = gameData.isReversed ? (7 - line) * square.height : line * square.height;
+
+    /*printf("Rendering square at col: %d, line: %d, pos_x: %d, pos_y: %d\n", col, line, pos_x, pos_y);*/
+
+    renderImage(square, pos_x, pos_y);
+
+    char piece = boardInfo[line][col];
+
+    if(piece != '.'){
+      int centered_x = (square.width - lightPawn.width) / 2;
+      int centered_y = (square.height - lightPawn.height) / 2;
+
+      pos_x = gameData.isReversed ? centered_x + (7 - col) * square.width : centered_x + col * square.width;
+      pos_y = gameData.isReversed ? centered_y + (7 - line) * square.height : centered_y + line * square.height;
+
+      /*printf("Rendering piece %c at col: %d, line: %d, pos_x: %d, pos_y: %d\n", piece, col, line, pos_x, pos_y);*/
+
+      renderPiece(piece, pos_x, pos_y);
+    }
+
+}
+
+void renderChessBoard(int width, int height) {
+
+  SDL_RenderClear(Game.screen.renderer);
+
+    for(int line = 7; line >= 0; line--)
+      for (int col = 0; col < 8; col++) 
+        aux(line, col);
 
 }
 
