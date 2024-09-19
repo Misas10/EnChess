@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/cc  -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/EnChess.dir/src/main.c.o -o EnChess -F/Library/Frameworks  -Wl,-rpath,/Library/Frameworks -framework SDL2 -framework Cocoa -framework SDL2_image

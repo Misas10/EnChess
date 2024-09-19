@@ -3,7 +3,7 @@ COMPILED_NAME = en-chess
 MAIN_DIR = src/
 
 build:
-	gcc -o $(COMPILED_NAME) $(MAIN_DIR)$(MAIN).c `sdl2-config --cflags --libs` -lSDL2_image
+	gcc -o $(COMPILED_NAME) $(MAIN_DIR)$(MAIN).c `sdl2-config --cflags --libs` -framework SDL2  
 
 run:
 	# $(MAIN_DIR)./main

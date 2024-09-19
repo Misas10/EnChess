@@ -1,0 +1,3 @@
+/Users/misael/Programming/c/EnChess/build/CMakeFiles/EnChess.dir
+/Users/misael/Programming/c/EnChess/build/CMakeFiles/edit_cache.dir
+/Users/misael/Programming/c/EnChess/build/CMakeFiles/rebuild_cache.dir
