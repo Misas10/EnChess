@@ -2,7 +2,6 @@
 
 #define RENDER_H
 #include "definitons.h"
-#include <stdio.h>
 
 void render() {
   renderChessBoard(Game.screen.w, Game.screen.h);
@@ -89,6 +88,8 @@ void aux(int line, int col) {
 
     if(!isLight)
       square = darkSquare;
+
+    // (7 - col/line) is just to reverse the order of the pieces
 
     int pos_x = gameData.isReversed ? (7 - col) * square.width : col * square.width;
     int pos_y = gameData.isReversed ? (7 - line) * square.height : line * square.height;
