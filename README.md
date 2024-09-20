@@ -17,6 +17,12 @@ cd EnChess
 ./build_run.sh
 ```
 
+It might be necessary to change the permissions to run the script file
+if so just:
+```bash
+chmod +x build_run.sh
+```
+
 ## Credits: 
 Assets/UI - [GeeekyBoy / royal-chess](https://github.com/GeeekyBoy/royal-chess/tree/main)
 
