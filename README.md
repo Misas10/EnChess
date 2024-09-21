@@ -3,8 +3,8 @@
 ## Table of Contents
 * [Overview](#Overview)
 * [Instalation](#Instalation)
-  * [Debian/Ubuntu](#Debian/Ubuntu-basedsystems)
-  * [Arch Linux](#ArchLinux)
+  * [Debian/Ubuntu](#Debian/Ubuntu-based-systems)
+  * [Arch Linux](#Arch-linux)
 * [Credits](#Credits)
 
 ## Overview
