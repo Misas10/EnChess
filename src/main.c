@@ -1,14 +1,13 @@
 
-#include "definitons.h"
-#include "events.h"
-#include "lifecycle.h"
-#include "load.h"
-#include "render.h"
+#include "../include/definitons.h"
+#include "../include/events.h"
+#include "../include/lifecycle.h"
+#include "../include/load.h"
+#include "../include/render.h"
 
 int main() {
   Game.init();
 
-  /*SDL_AddEventWatch(resizingEventWatcher, Game.screen.window);*/
   loadTextures();
 
   SDL_Event event;
@@ -30,6 +29,10 @@ int main() {
         if (event.key.keysym.sym == SDLK_i)
           gameData.isReversed = !gameData.isReversed;
 
+        break;
+
+      case SDL_MOUSEBUTTONDOWN:
+        mouseClick(event.button);
         break;
       }
     }
