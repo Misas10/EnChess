@@ -3,7 +3,7 @@
 ## Table of Contents
 * [Overview](#Overview)
 * [Instalation](#Instalation)
-  * [Debian/Ubuntu](#Debian-ubuntu)
+  * [Debian/Ubuntu](#DebianUbuntu-based-systems)
   * [Arch Linux](#Arch-linux)
 * [Credits](#Credits)
 
@@ -15,7 +15,7 @@ _*Only for Linux and MacOS_
 
 ### Install SDL2
 
-#### Debian/Ubuntu-based systems <a name="Debian-ubuntu"></a>
+#### Debian/Ubuntu-based systems
 ```bash
 sudo apt update
 sudo apt-get install libsdl2-dev
