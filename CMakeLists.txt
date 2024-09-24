@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15...3.30)
 project(EnChess VERSION 1.0)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(EnChess src/main.c)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/build/findSDL2")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 target_compile_definitions(
   "${CMAKE_PROJECT_NAME}"

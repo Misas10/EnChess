@@ -23,12 +23,12 @@ Help() {
 }
 
 Run(){
-  echo "${Blue}Running Enchess...${Color_Off}"
+  echo -e "${Blue}Running Enchess...${Color_Off}"
   "$BUILD_PATH/EnChess"
 }
 
 CompileRun() {
-  echo "${Blue}Running make${Color_Off}"
+  echo -e "${Blue}Running make${Color_Off}"
   make -f "$PROJECT_PATH/build/enchess_build/Makefile" $PROJECT_PATH
   Run
 }
@@ -37,10 +37,10 @@ Build() {
   # Create the build file if it does not exists
   mkdir -p $BUILD_PATH
 
-  echo "${Blue}Running cmake...${Color_Off}"
+  echo -e "${Blue}Running cmake...${Color_Off}"
   cmake -S $PROJECT_PATH -B $BUILD_PATH
 
-  echo "${Blue}Compiling...${Color_Off}"
+  echo -e "${Blue}Compiling...${Color_Off}"
   cmake --build $BUILD_PATH
 }
 
@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -*|--*)
       # echo "${0}: invalid option -- '${1}'"
-      echo "${Red}Invalid option: '${1}' ${Color_off}"
+      echo -e "${Red}Invalid option: '${1}' ${Color_off}"
       exit 1
       ;;
     *)

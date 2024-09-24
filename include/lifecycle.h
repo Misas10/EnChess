@@ -1,7 +1,6 @@
 #ifndef LIFECYCLE_H
 #define LIFECYCLE_H
 
-#include "SDL2/SDL2/SDL_stdinc.h"
 #include "definitons.h"
 
 Board boardInfo = {
