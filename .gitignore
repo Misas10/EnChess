@@ -4,3 +4,4 @@ build/enchess_build/
 .cache/
 build/compile_commands.json
 build/.*
+compile_commands.json
