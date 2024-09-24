@@ -38,12 +38,14 @@ void piece_shift(int bit_pos, Coord coord) {
   // Clear the bit
   remove_piece(bit_pos);
 
-  if (gameData.isReversed)
+  if (gameData.player == black)
     coord *= -1;
 
   // Add the bit in the new position
   add_in_position(bit_pos + coord);
 }
+
+Uint64 pawn_attacks_mask(int bit_pos) { return 0ULL; }
 
 void print_board() {
   printf("   ");
@@ -56,6 +58,9 @@ void print_board() {
     for (int file = 0; file < 8; file++) {
       // Calculate square with the coordinates
       int square = rank * 8 + file;
+
+      if (square % 8 == rank)
+        add_in_position(square);
 
       if (!file)
         printf(" %d ", 8 - rank);
@@ -73,16 +78,21 @@ GameInstance Game = {
     quit,
 };
 
-GameData gameData = {PLAYER, {-1, -1}, SDL_FALSE};
+GameData gameData = {white, {-1, -1}, SDL_FALSE};
+
+// Copy from bitboard values after setting 0s in the files/ranks
+const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
+const Uint64 notHFile = 0x101010101010101;
 
 void newGame();
 
 void init(void) {
 
-  add_in_position(e3);
-  piece_shift(e3, north);
-
+  // bitboard = notAFile;
   print_board();
+  // print_board();
+
+  printf("\nBitboard value: %ulld \n\n", bitboard);
 
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL Error", SDL_GetError(),

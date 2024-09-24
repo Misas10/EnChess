@@ -18,12 +18,13 @@ typedef struct {
   int height;
 } Image;
 
-typedef enum { PLAYER = 1, COMPUTER = 0 } Turn;
+typedef enum { white, black } Player;
 
 typedef struct {
-  Turn turn;
+  Player player;
   int selected_pos[2];
   SDL_bool isReversed;
+  Uint64 bitboard;
 } GameData;
 
 typedef struct {
