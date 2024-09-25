@@ -41,6 +41,10 @@ typedef struct {
   void (*quit)(void);
 } GameInstance;
 
+// Copy from bitboard values after setting 0s in the files/ranks
+const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
+const Uint64 notHFile = 0x7F7F7F7F7F7F7F7F;
+
 enum {
   a8,
   b8,
@@ -108,7 +112,6 @@ enum {
   h1,
 };
 
-extern Uint64 bitboard;
 extern GameData gameData;
 extern GameInstance Game;
 extern Board boardInfo;
@@ -120,6 +123,7 @@ Image lightSquare, lightPawn, lightQueen, lightKing, lightKnight, lightRook,
 void init(void);
 void quit(void);
 void render(void);
+void print_bitboard(Uint64 bitboard);
 
 /*void renderSVG(Image image, int x, int y);*/
 /*
