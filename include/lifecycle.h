@@ -15,11 +15,15 @@ Board boardInfo = {
     {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
 };
 
-Uint64 add_in_position(Uint64 bitboard, int bit_pos) { return bitboard | (1ULL << bit_pos); }
+Uint64 add_in_position(Uint64 bitboard, int bit_pos) {
+  return bitboard | (1ULL << bit_pos);
+}
 
 Uint64 get_mask(int bit_pos, Uint64 offset) { return ~(offset << bit_pos); };
 
-Uint64 remove_piece(int bit_pos) { return gameData.bitboard & get_mask(bit_pos, 1ULL); };
+Uint64 remove_piece(int bit_pos) {
+  return gameData.bitboard & get_mask(bit_pos, 1ULL);
+};
 
 typedef enum {
   east = 1,
@@ -37,9 +41,7 @@ Uint64 piece_shift(int bit_pos, Direction dir) {
   Uint64 bitboard = remove_piece(bit_pos);
   bitboard = add_in_position(bitboard, bit_pos);
 
-  print_bitboard(bitboard);
-
-  if(bitboard != gameData.bitboard){
+  if (bitboard != gameData.bitboard) {
     printf("\n ERROR: Cannot shift, no piece in position: %d \n\n", bit_pos);
     return gameData.bitboard;
   }
@@ -47,29 +49,33 @@ Uint64 piece_shift(int bit_pos, Direction dir) {
   if (gameData.player == black)
     dir *= -1;
 
+  if (dir == north)
+    return gameData.bitboard << 8;
+
+  else if (dir == south)
+    return gameData.bitboard >> 8;
+
   // To prevent undesireble piece moviment
-  if(dir > 0)
-    bitboard = notHFile;
+  if (dir < 0)
+    return (gameData.bitboard >> -dir) & notHFile;
 
   else
-    bitboard = notAFile;
-
-  // Add the bit in the new position
-  return add_in_position(gameData.bitboard, bit_pos + dir) & bitboard;
+    return (gameData.bitboard << dir) & notAFile;
 }
 
 Uint64 pawn_attacks[2][64];
 
-Uint64 pawn_attacks_mask(Uint64 b, Player player, int bit_pos) { 
-    return (piece_shift(bit_pos, northEast) | piece_shift(bit_pos, northWest));
+Uint64 pawn_attacks_mask(Uint64 b, Player player, int bit_pos) {
+  return (piece_shift(bit_pos, northEast) | piece_shift(bit_pos, northWest));
 }
 
 void init_masks() {
-  for(int square = 0; square < 64; square++) {
-    pawn_attacks[white][square] = pawn_attacks_mask(gameData.bitboard, white, square); 
-    pawn_attacks[black][square] = pawn_attacks_mask(gameData.bitboard, black, square); 
+  for (int square = 0; square < 64; square++) {
+    pawn_attacks[white][square] =
+        pawn_attacks_mask(gameData.bitboard, white, square);
+    pawn_attacks[black][square] =
+        pawn_attacks_mask(gameData.bitboard, black, square);
   }
-
 }
 
 void print_bitboard(Uint64 bitboard) {
@@ -108,14 +114,14 @@ void init(void) {
 
   // bitboard = notAFile;
 
-  gameData.bitboard = add_in_position(0ULL, a1);
-  gameData.bitboard = piece_shift(a1, northWest);
-  print_bitboard(gameData.bitboard);
+  gameData.bitboard = add_in_position(0ULL, b1);
+  // gameData.bitboard = piece_shift(a1, north);
+  // print_bitboard(gameData.bitboard);
 
   /*add_in_position(h1);*/
-  /*print_bitboard(pawn_attacks_mask(gameData.bitboard, white, a1));*/
+  print_bitboard(pawn_attacks_mask(gameData.bitboard, white, b1));
 
-  printf("\nBitboard value: %lu \n\n", gameData.bitboard);
+  printf("\nBitboard value: %llu \n\n", gameData.bitboard);
 
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL Error", SDL_GetError(),
