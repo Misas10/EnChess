@@ -144,7 +144,7 @@ void init(void) {
 
   int square = 0;
   gameData.bitboard = add_in_position(0ULL, c7);
-  print_bitboard((pawn_attacks[white][h3]));
+  // print_bitboard((pawn_attacks[white][h3]));
 
   printf("\nBitboard value: %llu \n\n", gameData.bitboard);
 
