@@ -28,17 +28,17 @@ Uint64 remove_piece(int bit_pos) {
 };
 
 typedef enum {
-  east = 1,
-  west = -1,
-  south = 8,
-  north = -8,
-  northEast = -7,
-  northWest = -9,
-  southWest = 7,
-  southEast = 9
+  east = 1,       // right
+  west = -1,      // left
+  south = 8,      // down
+  north = -8,     // up
+  northEast = -7, // up Right
+  northWest = -9, // up Left
+  southWest = 7,  // down Left
+  southEast = 9   // down Right
 } Direction;
 
-Uint64 piece_shift(Uint64 b, int bit_pos, Direction dir) {
+Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
   // Clear the bit
   Uint64 bitboard = remove_piece(bit_pos);
   bitboard = add_in_position(b, bit_pos);
@@ -48,7 +48,7 @@ Uint64 piece_shift(Uint64 b, int bit_pos, Direction dir) {
     return b;
   }
 
-  if (gameData.player == black)
+  if (player == black)
     dir *= -1;
 
   if (dir == north)
@@ -62,7 +62,7 @@ Uint64 piece_shift(Uint64 b, int bit_pos, Direction dir) {
     bitboard >>= -dir;
 
   else
-    bitboard <<= dir; //& notHFile;
+    bitboard <<= dir;
 
   if (dir == west || dir == northEast || dir == southEast)
     return bitboard & notAFile;
@@ -75,8 +75,8 @@ Uint64 pawn_attacks[2][64];
 Uint64 pawn_attacks_mask(Player player, int bit_pos) {
   Uint64 bitboard = add_in_position(0ULL, bit_pos);
 
-  return piece_shift(bitboard, bit_pos, northEast) |
-         piece_shift(bitboard, bit_pos, northWest);
+  return piece_shift(bitboard, player, bit_pos, northEast) |
+         piece_shift(bitboard, player, bit_pos, northWest);
   //
   Uint64 attacks = 0ULL;
 
@@ -98,11 +98,11 @@ Uint64 pawn_attacks_mask(Player player, int bit_pos) {
 
 void init_masks() {
   for (int square = 0; square < 64; square++) {
-    printf("%d \n", square);
-    print_bitboard(pawn_attacks_mask(white, square));
-    printf("\n");
-    // pawn_attacks[white][square] = pawn_attacks_mask(white, square);
-    // pawn_attacks[black][square] = pawn_attacks_mask(black, square);
+    // printf("%d \n", square);
+    // print_bitboard(pawn_attacks_mask(black, square));
+    // printf("\n");
+    pawn_attacks[white][square] = pawn_attacks_mask(white, square);
+    pawn_attacks[black][square] = pawn_attacks_mask(black, square);
   }
 }
 
@@ -144,27 +144,7 @@ void init(void) {
 
   int square = 0;
   gameData.bitboard = add_in_position(0ULL, c7);
-  // gameData.bitboard = add_in_position(gameData.bitboard, 10);
-  // piece_shift(gameData.bitboard, c7, north);
-  // piece_shift(gameData.bitboard, c7, south);
-  //
-  // piece_shift(gameData.bitboard, c7, east);
-  // piece_shift(gameData.bitboard, c7, west);
-  //
-  // piece_shift(gameData.bitboard, c7, southEast);
-  // piece_shift(gameData.bitboard, c7, southWest);
-  //
-  // piece_shift(gameData.bitboard, c7, northEast);
-  // piece_shift(gameData.bitboard, c7, northWest);
-  // print_bitboard(gameData.bitboard);
-  //
-  // /*add_in_position(h1);*/
-  // print_bitboard(pawn_attacks[white][b1]);
-  gameData.bitboard = piece_shift(gameData.bitboard, c7, northEast) |
-                      piece_shift(gameData.bitboard, c7, northWest);
-  // print_bitboard(gameData.bitboard);
-  // gameData.bitboard = add_in_position(0ULL, a1);
-  // gameData.bitboard = piece_shift(gameData.bitboard, a1, northWest);
+  print_bitboard((pawn_attacks[white][h3]));
 
   printf("\nBitboard value: %llu \n\n", gameData.bitboard);
 
