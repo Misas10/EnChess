@@ -3,6 +3,8 @@
 
 #include "SDL_stdinc.h"
 #include "definitons.h"
+#include "render.h"
+#include <stdio.h>
 
 Board boardInfo = {
     {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'},
@@ -28,53 +30,79 @@ Uint64 remove_piece(int bit_pos) {
 typedef enum {
   east = 1,
   west = -1,
-  north = -8,
   south = 8,
+  north = -8,
   northEast = -7,
   northWest = -9,
   southWest = 7,
   southEast = 9
 } Direction;
 
-Uint64 piece_shift(int bit_pos, Direction dir) {
+Uint64 piece_shift(Uint64 b, int bit_pos, Direction dir) {
   // Clear the bit
   Uint64 bitboard = remove_piece(bit_pos);
-  bitboard = add_in_position(bitboard, bit_pos);
+  bitboard = add_in_position(b, bit_pos);
 
-  if (bitboard != gameData.bitboard) {
+  if (bitboard != b) {
     printf("\n ERROR: Cannot shift, no piece in position: %d \n\n", bit_pos);
-    return gameData.bitboard;
+    return b;
   }
 
   if (gameData.player == black)
     dir *= -1;
 
   if (dir == north)
-    return gameData.bitboard << 8;
+    return bitboard >>= 8;
 
   else if (dir == south)
-    return gameData.bitboard >> 8;
+    return bitboard <<= 8;
 
   // To prevent undesireble piece moviment
   if (dir < 0)
-    return (gameData.bitboard >> -dir) & notHFile;
+    bitboard >>= -dir;
 
   else
-    return (gameData.bitboard << dir) & notAFile;
+    bitboard <<= dir; //& notHFile;
+
+  if (dir == west || dir == northEast || dir == southEast)
+    return bitboard & notAFile;
+
+  return bitboard & notHFile;
 }
 
 Uint64 pawn_attacks[2][64];
 
-Uint64 pawn_attacks_mask(Uint64 b, Player player, int bit_pos) {
-  return (piece_shift(bit_pos, northEast) | piece_shift(bit_pos, northWest));
+Uint64 pawn_attacks_mask(Player player, int bit_pos) {
+  Uint64 bitboard = add_in_position(0ULL, bit_pos);
+
+  return piece_shift(bitboard, bit_pos, northEast) |
+         piece_shift(bitboard, bit_pos, northWest);
+  //
+  Uint64 attacks = 0ULL;
+
+  if (player == white) {
+    if ((bitboard >> -northEast) & notAFile)
+      attacks |= (bitboard >> -northEast);
+
+    if ((bitboard << northWest) & notHFile)
+      attacks |= (bitboard << northWest);
+  }
+
+  else {
+    if ((bitboard << northWest) & notAFile)
+      attacks |= (bitboard << northWest);
+  }
+
+  return attacks;
 }
 
 void init_masks() {
   for (int square = 0; square < 64; square++) {
-    pawn_attacks[white][square] =
-        pawn_attacks_mask(gameData.bitboard, white, square);
-    pawn_attacks[black][square] =
-        pawn_attacks_mask(gameData.bitboard, black, square);
+    printf("%d \n", square);
+    print_bitboard(pawn_attacks_mask(white, square));
+    printf("\n");
+    // pawn_attacks[white][square] = pawn_attacks_mask(white, square);
+    // pawn_attacks[black][square] = pawn_attacks_mask(black, square);
   }
 }
 
@@ -112,14 +140,31 @@ void newGame();
 
 void init(void) {
 
-  // bitboard = notAFile;
+  init_masks();
 
-  gameData.bitboard = add_in_position(0ULL, b1);
-  // gameData.bitboard = piece_shift(a1, north);
+  int square = 0;
+  gameData.bitboard = add_in_position(0ULL, c7);
+  // gameData.bitboard = add_in_position(gameData.bitboard, 10);
+  // piece_shift(gameData.bitboard, c7, north);
+  // piece_shift(gameData.bitboard, c7, south);
+  //
+  // piece_shift(gameData.bitboard, c7, east);
+  // piece_shift(gameData.bitboard, c7, west);
+  //
+  // piece_shift(gameData.bitboard, c7, southEast);
+  // piece_shift(gameData.bitboard, c7, southWest);
+  //
+  // piece_shift(gameData.bitboard, c7, northEast);
+  // piece_shift(gameData.bitboard, c7, northWest);
   // print_bitboard(gameData.bitboard);
-
-  /*add_in_position(h1);*/
-  print_bitboard(pawn_attacks_mask(gameData.bitboard, white, b1));
+  //
+  // /*add_in_position(h1);*/
+  // print_bitboard(pawn_attacks[white][b1]);
+  gameData.bitboard = piece_shift(gameData.bitboard, c7, northEast) |
+                      piece_shift(gameData.bitboard, c7, northWest);
+  // print_bitboard(gameData.bitboard);
+  // gameData.bitboard = add_in_position(0ULL, a1);
+  // gameData.bitboard = piece_shift(gameData.bitboard, a1, northWest);
 
   printf("\nBitboard value: %llu \n\n", gameData.bitboard);
 
