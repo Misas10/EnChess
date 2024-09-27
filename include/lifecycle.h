@@ -1,10 +1,7 @@
 #ifndef LIFECYCLE_H
 #define LIFECYCLE_H
 
-#include "SDL_stdinc.h"
 #include "definitons.h"
-#include "render.h"
-#include <stdio.h>
 
 Board boardInfo = {
     {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'},
@@ -27,16 +24,6 @@ Uint64 remove_piece(int bit_pos) {
   return gameData.bitboard & get_mask(bit_pos, 1ULL);
 };
 
-typedef enum {
-  east = 1,       // right
-  west = -1,      // left
-  south = 8,      // down
-  north = -8,     // up
-  northEast = -7, // up Right
-  northWest = -9, // up Left
-  southWest = 7,  // down Left
-  southEast = 9   // down Right
-} Direction;
 
 Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
   // Clear the bit
@@ -64,45 +51,47 @@ Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
   else
     bitboard <<= dir;
 
-  if (dir == west || dir == northEast || dir == southEast)
+  if (dir == east || dir == northEast || dir == southEast)
     return bitboard & notAFile;
 
   return bitboard & notHFile;
 }
-
-Uint64 pawn_attacks[2][64];
 
 Uint64 pawn_attacks_mask(Player player, int bit_pos) {
   Uint64 bitboard = add_in_position(0ULL, bit_pos);
 
   return piece_shift(bitboard, player, bit_pos, northEast) |
          piece_shift(bitboard, player, bit_pos, northWest);
-  //
-  Uint64 attacks = 0ULL;
+}
 
-  if (player == white) {
-    if ((bitboard >> -northEast) & notAFile)
-      attacks |= (bitboard >> -northEast);
+Uint64 king_attacks_mask(int bit_pos) {
+  Uint64 bitboard = add_in_position(0ULL, bit_pos);
+  Player player = white;
 
-    if ((bitboard << northWest) & notHFile)
-      attacks |= (bitboard << northWest);
-  }
+  return piece_shift(bitboard, player, bit_pos, north) |
+         piece_shift(bitboard, player, bit_pos, south) | 
+         piece_shift(bitboard, player, bit_pos, northEast) | 
+         piece_shift(bitboard, player, bit_pos, northWest) | 
+         piece_shift(bitboard, player, bit_pos, southEast) |
+         piece_shift(bitboard, player, bit_pos, southWest) | 
+         piece_shift(bitboard, player, bit_pos, east) |
+         piece_shift(bitboard, player, bit_pos, west);
 
-  else {
-    if ((bitboard << northWest) & notAFile)
-      attacks |= (bitboard << northWest);
-  }
+}
 
-  return attacks;
+void init_pawn_mask(int square) {
+  pawn_attacks[white][square] = pawn_attacks_mask(white, square);
+  pawn_attacks[black][square] = pawn_attacks_mask(black, square);
+}
+
+void init_king_mask(int square) {
+  king_attacks[square] = king_attacks_mask(square);
 }
 
 void init_masks() {
   for (int square = 0; square < 64; square++) {
-    // printf("%d \n", square);
-    // print_bitboard(pawn_attacks_mask(black, square));
-    // printf("\n");
-    pawn_attacks[white][square] = pawn_attacks_mask(white, square);
-    pawn_attacks[black][square] = pawn_attacks_mask(black, square);
+    init_pawn_mask(square);
+    init_king_mask(square);
   }
 }
 
@@ -143,8 +132,10 @@ void init(void) {
   init_masks();
 
   int square = 0;
-  gameData.bitboard = add_in_position(0ULL, c7);
-  // print_bitboard((pawn_attacks[white][h3]));
+  gameData.bitboard = add_in_position(0ULL, g1);
+  /*print_bitboard(piece_shift(gameData.bitboard, white, g1, east));*/
+  /*print_bitboard((pawn_attacks[white][h3]));*/
+  /*print_bitboard((king_attacks[h3]));*/
 
   printf("\nBitboard value: %llu \n\n", gameData.bitboard);
 

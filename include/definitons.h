@@ -42,8 +42,6 @@ typedef struct {
 } GameInstance;
 
 // Copy from bitboard values after setting 0s in the files/ranks
-const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
-const Uint64 notHFile = 0x7F7F7F7F7F7F7F7F;
 
 enum {
   a8,
@@ -112,6 +110,22 @@ enum {
   h1,
 };
 
+typedef enum {
+  east = 1,       // right
+  west = -1,      // left
+  south = 8,      // down
+  north = -8,     // up
+  northEast = -7, // up Right
+  northWest = -9, // up Left
+  southWest = 7,  // down Left
+  southEast = 9   // down Right
+} Direction;
+
+
+// Variables declarations
+const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
+const Uint64 notHFile = 0x7F7F7F7F7F7F7F7F;
+
 extern GameData gameData;
 extern GameInstance Game;
 extern Board boardInfo;
@@ -120,10 +134,19 @@ Image lightSquare, lightPawn, lightQueen, lightKing, lightKnight, lightRook,
     lightBishop, darkSquare, darkPawn, darkQueen, darkKing, darkKnight,
     darkRook, darkBishop, selected;
 
+Uint64 pawn_attacks[2][64];
+Uint64 king_attacks[64];
+
+//
+// Funtions declarations
+//
 void init(void);
 void quit(void);
 void render(void);
 void print_bitboard(Uint64 bitboard);
+
+
+
 
 /*void renderSVG(Image image, int x, int y);*/
 /*
