@@ -118,6 +118,20 @@ Uint64 get_diagonal_ray(int square) {
     ray |= add_in_position(0ULL, pos);
   }
 
+  // southWest
+  for (t_file = file - 1, t_rank = rank + 1; t_file >= 0 && t_rank <= 7;
+       t_file--, t_rank++) {
+    int pos = t_rank * 8 + t_file;
+    ray |= add_in_position(0ULL, pos);
+  }
+
+  // northEast
+  for (t_file = file + 1, t_rank = rank - 1; t_file <= 7 && t_rank >= 0;
+       t_file++, t_rank--) {
+    int pos = t_rank * 8 + t_file;
+    ray |= add_in_position(0ULL, pos);
+  }
+
   return ray ^ add_in_position(0ULL, square);
 }
 
@@ -176,7 +190,7 @@ void init(void) {
   print_bitboard((king_attacks[h3]));
 
   printf("\nBitboard value: %llu \n", gameData.bitboard);
-  printf("Genereted all bitboard in: %fs \n\n", time_taken);
+  printf("Genereted all bitboard masks in: %fs \n\n", time_taken);
 
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL Error", SDL_GetError(),
