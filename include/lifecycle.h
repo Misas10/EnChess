@@ -2,6 +2,9 @@
 #define LIFECYCLE_H
 
 #include "definitons.h"
+#include "render.h"
+#include <stdio.h>
+#include <time.h>
 
 Board boardInfo = {
     {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'},
@@ -23,7 +26,6 @@ Uint64 get_mask(int bit_pos, Uint64 offset) { return ~(offset << bit_pos); };
 Uint64 remove_piece(int bit_pos) {
   return gameData.bitboard & get_mask(bit_pos, 1ULL);
 };
-
 
 Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
   // Clear the bit
@@ -69,14 +71,13 @@ Uint64 king_attacks_mask(int bit_pos) {
   Player player = white;
 
   return piece_shift(bitboard, player, bit_pos, north) |
-         piece_shift(bitboard, player, bit_pos, south) | 
-         piece_shift(bitboard, player, bit_pos, northEast) | 
-         piece_shift(bitboard, player, bit_pos, northWest) | 
+         piece_shift(bitboard, player, bit_pos, south) |
+         piece_shift(bitboard, player, bit_pos, northEast) |
+         piece_shift(bitboard, player, bit_pos, northWest) |
          piece_shift(bitboard, player, bit_pos, southEast) |
-         piece_shift(bitboard, player, bit_pos, southWest) | 
+         piece_shift(bitboard, player, bit_pos, southWest) |
          piece_shift(bitboard, player, bit_pos, east) |
          piece_shift(bitboard, player, bit_pos, west);
-
 }
 
 void init_pawn_mask(int square) {
@@ -88,10 +89,43 @@ void init_king_mask(int square) {
   king_attacks[square] = king_attacks_mask(square);
 }
 
+int get_rank(int square) { return square / 8; }
+
+int get_file(int square) { return square % 8; }
+
+Uint64 get_diagonal_ray(int square) {
+  int rank = get_rank(square);
+  int file = get_file(square);
+
+  int t_rank, t_file = 0;
+
+  Uint64 ray = add_in_position(0ULL, square);
+
+  // print_bitboard(ray & notHFile);
+  int i = file;
+
+  // southEast ray
+  for (t_file = file + 1, t_rank = rank + 1; t_file <= 7 && t_rank <= 7;
+       t_file++, t_rank++) {
+    int pos = t_rank * 8 + t_file;
+    ray |= add_in_position(0ULL, pos);
+  }
+
+  // northWest ray
+  for (t_file = file - 1, t_rank = rank - 1; t_file >= 0 && t_rank >= 0;
+       t_file--, t_rank--) {
+    int pos = t_rank * 8 + t_file;
+    ray |= add_in_position(0ULL, pos);
+  }
+
+  return ray ^ add_in_position(0ULL, square);
+}
+
 void init_masks() {
   for (int square = 0; square < 64; square++) {
     init_pawn_mask(square);
     init_king_mask(square);
+    print_bitboard(get_diagonal_ray(square));
   }
 }
 
@@ -128,16 +162,21 @@ GameData gameData = {white, {-1, -1}, SDL_FALSE};
 void newGame();
 
 void init(void) {
+  clock_t t;
 
+  t = clock();
   init_masks();
+  t = clock() - t;
+  double time_taken = ((double)t) / CLOCKS_PER_SEC;
 
   int square = 0;
-  gameData.bitboard = add_in_position(0ULL, g1);
+  gameData.bitboard = add_in_position(0ULL, 4);
   /*print_bitboard(piece_shift(gameData.bitboard, white, g1, east));*/
   /*print_bitboard((pawn_attacks[white][h3]));*/
-  /*print_bitboard((king_attacks[h3]));*/
+  print_bitboard((king_attacks[h3]));
 
-  printf("\nBitboard value: %llu \n\n", gameData.bitboard);
+  printf("\nBitboard value: %llu \n", gameData.bitboard);
+  printf("Genereted all bitboard in: %fs \n\n", time_taken);
 
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL Error", SDL_GetError(),

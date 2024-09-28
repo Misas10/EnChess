@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
@@ -121,7 +122,6 @@ typedef enum {
   southEast = 9   // down Right
 } Direction;
 
-
 // Variables declarations
 const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
 const Uint64 notHFile = 0x7F7F7F7F7F7F7F7F;
@@ -144,9 +144,6 @@ void init(void);
 void quit(void);
 void render(void);
 void print_bitboard(Uint64 bitboard);
-
-
-
 
 /*void renderSVG(Image image, int x, int y);*/
 /*
