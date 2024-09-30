@@ -122,9 +122,22 @@ typedef enum {
   southEast = 9   // down Right
 } Direction;
 
+typedef enum {
+  noNorthWest = -17,
+  noNorthEast = -15,
+  weWestNorth = -10,
+  eaEastNorth = -6,
+  weWestSouth = 6,
+  eaEastSouth = 10,
+  soSouthWest = 15,
+  soSouthEast = 17
+} KnightDirection;
+
 // Variables declarations
-const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
-const Uint64 notHFile = 0x7F7F7F7F7F7F7F7F;
+static const Uint64 notAFile = 0xFEFEFEFEFEFEFEFE;
+static const Uint64 notGFile = 0xBFBFBFBFBFBFBFBF;
+static const Uint64 notBFile = 0xFDFDFDFDFDFDFDFD;
+static const Uint64 notHFile = 0x7F7F7F7F7F7F7F7F;
 
 extern GameData gameData;
 extern GameInstance Game;
@@ -134,8 +147,8 @@ Image lightSquare, lightPawn, lightQueen, lightKing, lightKnight, lightRook,
     lightBishop, darkSquare, darkPawn, darkQueen, darkKing, darkKnight,
     darkRook, darkBishop, selected;
 
-Uint64 pawn_attacks[2][64];
-Uint64 king_attacks[64];
+Uint64 pawn_attacks[2][64], king_attacks[64], bishop_attacks[64],
+    rook_attacks[64], queen_attacks[64], knight_attacks[64];
 
 //
 // Funtions declarations
@@ -163,5 +176,12 @@ void renderChessBoard(int width, int height);
 void renderImage(Image image, int x, int y);
 
 void loadTextures();
+
+void init_masks();
+void init_pawn_mask(int square);
+void init_pawn_mask(int square);
+void init_bishop_mask(int square);
+void init_rook_mask(int square);
+void init_queen_attacks(int square);
 
 #endif

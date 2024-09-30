@@ -1,4 +1,5 @@
 
+#include "../include/bitboard.h"
 #include "../include/definitons.h"
 #include "../include/events.h"
 #include "../include/lifecycle.h"

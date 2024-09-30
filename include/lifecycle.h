@@ -1,10 +1,8 @@
 #ifndef LIFECYCLE_H
 #define LIFECYCLE_H
 
+#include "bitboard.h"
 #include "definitons.h"
-#include "render.h"
-#include <stdio.h>
-#include <time.h>
 
 Board boardInfo = {
     {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'},
@@ -16,153 +14,6 @@ Board boardInfo = {
     {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
     {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
 };
-
-Uint64 add_in_position(Uint64 bitboard, int bit_pos) {
-  return bitboard | (1ULL << bit_pos);
-}
-
-Uint64 get_mask(int bit_pos, Uint64 offset) { return ~(offset << bit_pos); };
-
-Uint64 remove_piece(int bit_pos) {
-  return gameData.bitboard & get_mask(bit_pos, 1ULL);
-};
-
-Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
-  // Clear the bit
-  Uint64 bitboard = remove_piece(bit_pos);
-  bitboard = add_in_position(b, bit_pos);
-
-  if (bitboard != b) {
-    printf("\n ERROR: Cannot shift, no piece in position: %d \n\n", bit_pos);
-    return b;
-  }
-
-  if (player == black)
-    dir *= -1;
-
-  if (dir == north)
-    return bitboard >>= 8;
-
-  else if (dir == south)
-    return bitboard <<= 8;
-
-  // To prevent undesireble piece moviment
-  if (dir < 0)
-    bitboard >>= -dir;
-
-  else
-    bitboard <<= dir;
-
-  if (dir == east || dir == northEast || dir == southEast)
-    return bitboard & notAFile;
-
-  return bitboard & notHFile;
-}
-
-Uint64 pawn_attacks_mask(Player player, int bit_pos) {
-  Uint64 bitboard = add_in_position(0ULL, bit_pos);
-
-  return piece_shift(bitboard, player, bit_pos, northEast) |
-         piece_shift(bitboard, player, bit_pos, northWest);
-}
-
-Uint64 king_attacks_mask(int bit_pos) {
-  Uint64 bitboard = add_in_position(0ULL, bit_pos);
-  Player player = white;
-
-  return piece_shift(bitboard, player, bit_pos, north) |
-         piece_shift(bitboard, player, bit_pos, south) |
-         piece_shift(bitboard, player, bit_pos, northEast) |
-         piece_shift(bitboard, player, bit_pos, northWest) |
-         piece_shift(bitboard, player, bit_pos, southEast) |
-         piece_shift(bitboard, player, bit_pos, southWest) |
-         piece_shift(bitboard, player, bit_pos, east) |
-         piece_shift(bitboard, player, bit_pos, west);
-}
-
-void init_pawn_mask(int square) {
-  pawn_attacks[white][square] = pawn_attacks_mask(white, square);
-  pawn_attacks[black][square] = pawn_attacks_mask(black, square);
-}
-
-void init_king_mask(int square) {
-  king_attacks[square] = king_attacks_mask(square);
-}
-
-int get_rank(int square) { return square / 8; }
-
-int get_file(int square) { return square % 8; }
-
-Uint64 get_diagonal_ray(int square) {
-  int rank = get_rank(square);
-  int file = get_file(square);
-
-  int t_rank, t_file = 0;
-
-  Uint64 ray = add_in_position(0ULL, square);
-
-  // print_bitboard(ray & notHFile);
-  int i = file;
-
-  // southEast ray
-  for (t_file = file + 1, t_rank = rank + 1; t_file <= 7 && t_rank <= 7;
-       t_file++, t_rank++) {
-    int pos = t_rank * 8 + t_file;
-    ray |= add_in_position(0ULL, pos);
-  }
-
-  // northWest ray
-  for (t_file = file - 1, t_rank = rank - 1; t_file >= 0 && t_rank >= 0;
-       t_file--, t_rank--) {
-    int pos = t_rank * 8 + t_file;
-    ray |= add_in_position(0ULL, pos);
-  }
-
-  // southWest
-  for (t_file = file - 1, t_rank = rank + 1; t_file >= 0 && t_rank <= 7;
-       t_file--, t_rank++) {
-    int pos = t_rank * 8 + t_file;
-    ray |= add_in_position(0ULL, pos);
-  }
-
-  // northEast
-  for (t_file = file + 1, t_rank = rank - 1; t_file <= 7 && t_rank >= 0;
-       t_file++, t_rank--) {
-    int pos = t_rank * 8 + t_file;
-    ray |= add_in_position(0ULL, pos);
-  }
-
-  return ray ^ add_in_position(0ULL, square);
-}
-
-void init_masks() {
-  for (int square = 0; square < 64; square++) {
-    init_pawn_mask(square);
-    init_king_mask(square);
-    print_bitboard(get_diagonal_ray(square));
-  }
-}
-
-void print_bitboard(Uint64 bitboard) {
-  printf("   ");
-  for (int i = 'a'; i < 'a' + 8; i++)
-    printf(" %c", i);
-
-  printf("\n");
-
-  for (int rank = 0; rank < 8; rank++) {
-    for (int file = 0; file < 8; file++) {
-      // Calculate square with the coordinates
-      int square = rank * 8 + file;
-
-      if (!file)
-        printf(" %d ", 8 - rank);
-
-      printf(" %c", (bitboard & (1ULL << square)) ? '1' : '0');
-    }
-    printf("\n");
-  }
-}
 
 GameInstance Game = {
     SDL_FALSE,
@@ -187,7 +38,7 @@ void init(void) {
   gameData.bitboard = add_in_position(0ULL, 4);
   /*print_bitboard(piece_shift(gameData.bitboard, white, g1, east));*/
   /*print_bitboard((pawn_attacks[white][h3]));*/
-  print_bitboard((king_attacks[h3]));
+  print_bitboard((king_attacks[a5]));
 
   printf("\nBitboard value: %llu \n", gameData.bitboard);
   printf("Genereted all bitboard masks in: %fs \n\n", time_taken);
@@ -211,7 +62,7 @@ void init(void) {
     return;
   }
 
-  /*SDL_SetWindowFullscreen(Game.screen.window, 0);*/
+  SDL_SetWindowFullscreen(Game.screen.window, 0);
 
   printf("Rendering window\n");
   // Rendering the window
