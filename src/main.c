@@ -39,6 +39,8 @@ int main() {
     }
 
     render();
+
+    // print_bitboard(gameData.bitboard);
     /*SDL_*/
   }
   Game.quit();

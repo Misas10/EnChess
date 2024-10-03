@@ -89,6 +89,9 @@ void _renderAllPieces(int line, int col) {
   char piece = boardInfo[line][col];
 
   if (piece != '.') {
+    int bit_pos = line * 8 + col;
+    gameData.bitboard = add_in_position(gameData.bitboard, bit_pos);
+
     int centered_x = (square.width - lightPawn.width) / 2;
     int centered_y = (square.height - lightPawn.height) / 2;
 

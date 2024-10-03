@@ -2,7 +2,7 @@
 #define LIFECYCLE_H
 
 #include "bitboard.h"
-#include "definitons.h"
+// #include "definitons.h"
 
 Board boardInfo = {
     {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'},
@@ -14,6 +14,14 @@ Board boardInfo = {
     {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
     {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
 };
+
+// char board_info[64] = {
+//     'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R', 'P', 'P', 'P', 'P', 'P',
+//     'P', 'P', 'P', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.',
+//     '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.',
+//     '.', '.', '.', '.', '.', '.', '.', '.', '.', 'p', 'p', 'p', 'p',
+//     'p', 'p', 'p', 'p', 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+// };
 
 GameInstance Game = {
     SDL_FALSE,
@@ -34,11 +42,12 @@ void init(void) {
   t = clock() - t;
   double time_taken = ((double)t) / CLOCKS_PER_SEC;
 
-  int square = 0;
-  gameData.bitboard = add_in_position(0ULL, 4);
+  // int square = 0;
+  // gameData.bitboard = add_in_position(0ULL, 4);
   /*print_bitboard(piece_shift(gameData.bitboard, white, g1, east));*/
   /*print_bitboard((pawn_attacks[white][h3]));*/
-  print_bitboard((king_attacks[a5]));
+  print_bitboard(king_attacks[a5]);
+  // print_bitboard(pawn_move(a6, black));
 
   printf("\nBitboard value: %llu \n", gameData.bitboard);
   printf("Genereted all bitboard masks in: %fs \n\n", time_taken);
@@ -75,9 +84,7 @@ void init(void) {
     return;
   }
 
-  // Game.isRunning = SDL_TRUE;
-
-  /*memmove(Game.data.board, boardData, sizeof(Board));*/
+  Game.isRunning = SDL_TRUE;
 };
 
 void quit(void) {

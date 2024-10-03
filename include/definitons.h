@@ -158,6 +158,8 @@ void quit(void);
 void render(void);
 void print_bitboard(Uint64 bitboard);
 
+Uint64 add_in_position(Uint64 bitboard, int bit_pos);
+
 /*void renderSVG(Image image, int x, int y);*/
 /*
  * Render an SVG image in a x, y position
@@ -183,5 +185,8 @@ void init_pawn_mask(int square);
 void init_bishop_mask(int square);
 void init_rook_mask(int square);
 void init_queen_attacks(int square);
+
+int get_rank(int square);
+int get_file(int square);
 
 #endif

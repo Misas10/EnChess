@@ -2,7 +2,6 @@
 #define BITBOARD_H
 
 #include "definitons.h"
-#include <stdio.h>
 
 Uint64 add_in_position(Uint64 bitboard, int bit_pos) {
   return bitboard | (1ULL << bit_pos);
@@ -16,7 +15,7 @@ Uint64 remove_piece(int bit_pos) {
 
 Uint64 check_in_position(Uint64 b, int bit_pos) {
   Uint64 bitboard = remove_piece(bit_pos);
-  /* Uint64  */ bitboard = add_in_position(b, bit_pos);
+  bitboard = add_in_position(b, bit_pos);
 
   if (bitboard != b)
     return -1;
@@ -58,14 +57,44 @@ Uint64 knight_shift(Uint64 b, int bit_pos, KnightDirection dir) {
   }
 }
 
-Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
+Uint64 move_piece(Uint64 b, Player player, int bit_pos, Direction dir) {
   // Clear the bit
-  Uint64 bitboard = b;
 
   if (check_in_position(b, bit_pos) == -1) {
     printf("\n ERROR: Cannot shift, no piece in position: %d \n\n", bit_pos);
     return b;
   }
+
+  Uint64 bitboard = add_in_position(0ULL, bit_pos);
+
+  if (player == black)
+    dir *= -1;
+
+  if (dir == north)
+    return bitboard >>= 8 | b;
+
+  else if (dir == south)
+    return bitboard <<= 8 | b;
+
+  // To prevent undesireble piece moviment
+  if (dir < 0)
+    bitboard >>= -dir;
+
+  else
+    bitboard <<= dir;
+
+  if (dir == east || dir == northEast || dir == southEast)
+    bitboard &= notAFile;
+
+  else
+    bitboard &= notHFile;
+
+  return bitboard | b;
+}
+
+Uint64 piece_shift(Player player, int bit_pos, Direction dir) {
+  // Clear the bit
+  Uint64 bitboard = add_in_position(0ULL, bit_pos);
 
   if (player == black)
     dir *= -1;
@@ -92,27 +121,49 @@ Uint64 piece_shift(Uint64 b, Player player, int bit_pos, Direction dir) {
 Uint64 pawn_attacks_mask(Player player, int bit_pos) {
   Uint64 bitboard = add_in_position(0ULL, bit_pos);
 
-  return piece_shift(bitboard, player, bit_pos, northEast) |
-         piece_shift(bitboard, player, bit_pos, northWest);
+  return move_piece(bitboard, player, bit_pos, northEast) |
+         move_piece(bitboard, player, bit_pos, northWest);
 }
 
 Uint64 king_attacks_mask(int bit_pos) {
   Uint64 bitboard = add_in_position(0ULL, bit_pos);
   Player player = white;
 
-  return piece_shift(bitboard, player, bit_pos, north) |
-         piece_shift(bitboard, player, bit_pos, south) |
-         piece_shift(bitboard, player, bit_pos, northEast) |
-         piece_shift(bitboard, player, bit_pos, northWest) |
-         piece_shift(bitboard, player, bit_pos, southEast) |
-         piece_shift(bitboard, player, bit_pos, southWest) |
-         piece_shift(bitboard, player, bit_pos, east) |
-         piece_shift(bitboard, player, bit_pos, west);
+  return move_piece(bitboard, player, bit_pos, north) |
+         move_piece(bitboard, player, bit_pos, south) |
+         move_piece(bitboard, player, bit_pos, northEast) |
+         move_piece(bitboard, player, bit_pos, northWest) |
+         move_piece(bitboard, player, bit_pos, southEast) |
+         move_piece(bitboard, player, bit_pos, southWest) |
+         move_piece(bitboard, player, bit_pos, east) |
+         move_piece(bitboard, player, bit_pos, west);
 }
 
 void init_pawn_mask(int square) {
   pawn_attacks[white][square] = pawn_attacks_mask(white, square);
   pawn_attacks[black][square] = pawn_attacks_mask(black, square);
+}
+
+Uint64 pawn_move(int square, Player player) {
+  Uint64 second_rank = 0xFF00;
+  Uint64 seventh_rank = 0xFF000000000000;
+
+  Uint64 bitboard = add_in_position(0ULL, square);
+
+  if (((second_rank | seventh_rank) & bitboard) != 0) {
+
+    bitboard = move_piece(bitboard, player, square, north);
+
+    if (player == white)
+      bitboard |= piece_shift(player, square - 8, north);
+
+    else
+      bitboard |= piece_shift(player, square + 8, north);
+
+  } else
+    bitboard = move_piece(bitboard, player, square, north);
+
+  return bitboard;
 }
 
 void init_king_mask(int square) {
@@ -258,6 +309,11 @@ void print_bitboard(Uint64 bitboard) {
     for (int file = 0; file < 8; file++) {
       // Calculate square with the coordinates
       int square = rank * 8 + file;
+
+      // if (rank == 6)
+      //   printf("1");
+      // else
+      //   printf("0");
 
       if (!file)
         printf(" %d ", 8 - rank);
