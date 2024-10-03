@@ -11,6 +11,22 @@
 #define WINDOW_HEIGHT 800
 #define WINDOW_NAME "En-Chess"
 
+// Pieces Char representation
+#define W_PAWN 'p'
+#define W_QUEEN 'q'
+#define W_KING 'k'
+#define W_BISHOP 'b'
+#define W_KNIGHT 'n'
+#define W_ROOK 'r'
+
+#define B_PAWN 'P'
+#define B_QUEEN 'Q'
+#define B_KING 'K'
+#define B_BISHOP 'B' 
+#define B_KNIGHT 'N'
+#define B_ROOK 'R'
+#define EMPTY '.' 
+
 typedef char Board[8][8];
 
 typedef struct {

@@ -46,7 +46,7 @@ void init(void) {
   // gameData.bitboard = add_in_position(0ULL, 4);
   /*print_bitboard(piece_shift(gameData.bitboard, white, g1, east));*/
   /*print_bitboard((pawn_attacks[white][h3]));*/
-  print_bitboard(king_attacks[a5]);
+  /*print_bitboard(king_attacks[a5]);*/
   // print_bitboard(pawn_move(a6, black));
 
   printf("\nBitboard value: %llu \n", gameData.bitboard);

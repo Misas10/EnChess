@@ -2,7 +2,6 @@
 #define EVENTS_H
 
 #include "definitons.h"
-#include <stdio.h>
 
 void moveTo(int actual_pos, int next_pos) {
   int rank, nextRank, file, nextFile;
@@ -13,23 +12,45 @@ void moveTo(int actual_pos, int next_pos) {
   nextFile = get_file(next_pos);
 
   char piece = boardInfo[rank][file];
-  boardInfo[rank][file] = '.';
+  boardInfo[rank][file] = EMPTY;
 
   boardInfo[nextRank][nextFile] = piece;
 }
 
-void showLegalMoves(int square, char piece) {
-  Uint64 bitboard;
+// TODO: ADICIONAR A PARTE DOS PEÕES
+
+Uint64 get_legal_bitboard(int square, char piece) {
+  Uint64 bitboard = 0ULL;
 
   switch (piece) {
-  case 'n':
-  case 'N':
-    printf("Knight selected in: %d\n", square);
-    bitboard = knight_attacks[1];
+  case W_KNIGHT: 
+  case B_KNIGHT:
+    bitboard = knight_attacks[square];
     break;
+
+  case W_BISHOP:
+  case B_BISHOP:
+    bitboard = bishop_attacks[square];
+    break;
+
+  case W_ROOK:
+  case B_ROOK:
+    bitboard = rook_attacks[square];
+    break;
+
+  case W_QUEEN:
+  case B_QUEEN:
+    bitboard = queen_attacks[square];
+    break;
+
+  case W_KING:
+  case B_KING:
+    bitboard = king_attacks[square];
+    break;
+
   }
 
-  print_bitboard(bitboard);
+  return bitboard ^ gameData.bitboard;
 }
 
 void mouseClick(SDL_MouseButtonEvent mouse) {
@@ -53,7 +74,7 @@ void mouseClick(SDL_MouseButtonEvent mouse) {
 
     // If the square is not selected, select it
   } else {
-    showLegalMoves(square, piece);
+    print_bitboard(get_legal_bitboard(square, piece));
 
     gameData.selected_pos[0] = pos_x;
     gameData.selected_pos[1] = pos_y;

@@ -45,11 +45,11 @@ Uint64 knight_shift(Uint64 b, int bit_pos, KnightDirection dir) {
 
   case weWestSouth:
   case weWestNorth:
-    return bitboard & notGFile;
+    return bitboard & notGFile & notHFile;
 
   case eaEastNorth:
   case eaEastSouth:
-    return bitboard & notBFile;
+    return bitboard & notBFile & notAFile;
 
   case noNorthEast:
   case soSouthEast:
@@ -277,7 +277,7 @@ void init_queen_attacks(int square) {
 void init_knight_attacks(int square) {
   Uint64 b = add_in_position(0ULL, square);
 
-  king_attacks[square] = knight_shift(b, square, noNorthWest) |
+  knight_attacks[square] = knight_shift(b, square, noNorthWest) |
                          knight_shift(b, square, noNorthEast) |
                          knight_shift(b, square, soSouthWest) |
                          knight_shift(b, square, soSouthEast) |
@@ -286,6 +286,8 @@ void init_knight_attacks(int square) {
                          knight_shift(b, square, weWestNorth) |
                          knight_shift(b, square, weWestSouth);
 }
+
+Uint64 get_valid_moves(Uint64 bitboard, int square);
 
 void init_masks() {
   for (int square = 0; square < 64; square++) {
