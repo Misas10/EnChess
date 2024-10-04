@@ -30,7 +30,7 @@ GameInstance Game = {
     quit,
 };
 
-GameData gameData = {white, {-1, -1}, SDL_FALSE};
+GameData gameData = {white, -1, SDL_FALSE};
 
 void newGame();
 

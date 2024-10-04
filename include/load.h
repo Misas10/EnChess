@@ -25,6 +25,7 @@ void loadTextures() {
   darkRook = svg2Tex(__ASSETS__ "pieces/rd.svg", pieceSize, pieceSize);
 
   selected = svg2Tex(__ASSETS__ "selected.svg", squareSize, squareSize);
+  legalMoves = svg2Tex(__ASSETS__ "allowed.svg", squareSize, squareSize);
 }
 
 Image svg2Tex(char *fileName, int width, int height) {

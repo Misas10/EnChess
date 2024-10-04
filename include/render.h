@@ -2,6 +2,8 @@
 
 #define RENDER_H
 #include "definitons.h"
+#include "events.h"
+#include <stdio.h>
 
 Image square;
 
@@ -119,6 +121,23 @@ void aux(int line, int col) {
   renderImage(square, pos_x, pos_y);
 }
 
+void renderLegalMoves(int x, int y) {
+  int square = y * 8 + x;
+
+  Uint64 pos_bit = add_in_position(0ULL, square);
+
+  Uint64 pieceMove = 
+    get_legal_bitboard(square, get_piece(get_rank(gameData.selected_pos), get_file(gameData.selected_pos)));
+
+  print_bitboard(pieceMove);
+
+  int start_x = x * lightSquare.width;
+  int start_y = y * lightSquare.width;
+
+  if((pos_bit & pieceMove) != 0)
+    renderImage(legalMoves, start_x, start_y);
+}
+
 void renderChessBoard(int width, int height) {
 
   SDL_RenderClear(Game.screen.renderer);
@@ -127,12 +146,24 @@ void renderChessBoard(int width, int height) {
     for (int col = 0; col < 8; col++)
       aux(line, col);
 
-  if (gameData.selected_pos[0] != -1)
-    renderImage(selected, gameData.selected_pos[0], gameData.selected_pos[1]);
+  // Render selected move
+  if (gameData.selected_pos != -1){
+    int start_x = get_file(gameData.selected_pos) * lightSquare.width;
+    int start_y = get_rank(gameData.selected_pos) * lightSquare.height;
+
+    renderImage(selected, start_x, start_y);
+
+    /*printf("\n%d %d\n",  start_x, start_y);*/
+
+    for (int i = 0; i < 8; i++)
+      for (int j = 0; j < 8; j++)
+        renderLegalMoves(i, j);
+  }
 
   for (int i = 0; i < 8; i++)
     for (int j = 0; j < 8; j++)
       _renderAllPieces(i, j);
+    
 }
 
 #endif

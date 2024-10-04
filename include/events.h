@@ -50,7 +50,7 @@ Uint64 get_legal_bitboard(int square, char piece) {
 
   }
 
-  return bitboard ^ gameData.bitboard;
+  return bitboard; // ^ gameData.bitboard;
 }
 
 void mouseClick(SDL_MouseButtonEvent mouse) {
@@ -66,24 +66,20 @@ void mouseClick(SDL_MouseButtonEvent mouse) {
   char piece = boardInfo[y][x];
 
   // If the square is already selected
-  if (gameData.selected_pos[0] != -1 && gameData.selected_pos[0] == pos_x &&
-      gameData.selected_pos[1] == pos_y) {
-
-    gameData.selected_pos[0] = -1;
-    gameData.selected_pos[1] = -1;
+  if (gameData.selected_pos != -1) {
+    gameData.selected_pos = -1;
 
     // If the square is not selected, select it
   } else {
     print_bitboard(get_legal_bitboard(square, piece));
 
-    gameData.selected_pos[0] = pos_x;
-    gameData.selected_pos[1] = pos_y;
+    gameData.selected_pos = get_squareFromCoord(x, y);
 
     if (piece != '.') {
-      printf("\n%c\n", boardInfo[y][x]);
+      printf("\n%c\n", get_piece(x, y));
 
       printf("\nSquare selected: %d\n", square);
-      moveTo(square, e4);
+      /*moveTo(square, e4);*/
     }
 
     printf("\n%d, %d\n", pos_x, pos_y);

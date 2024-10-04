@@ -39,7 +39,7 @@ typedef enum { white, black } Player;
 
 typedef struct {
   Player player;
-  int selected_pos[2];
+  int selected_pos; // from 0 to 63
   SDL_bool isReversed;
   Uint64 bitboard;
 } GameData;
@@ -161,7 +161,7 @@ extern Board boardInfo;
 
 Image lightSquare, lightPawn, lightQueen, lightKing, lightKnight, lightRook,
     lightBishop, darkSquare, darkPawn, darkQueen, darkKing, darkKnight,
-    darkRook, darkBishop, selected;
+    darkRook, darkBishop, selected, legalMoves;
 
 Uint64 pawn_attacks[2][64], king_attacks[64], bishop_attacks[64],
     rook_attacks[64], queen_attacks[64], knight_attacks[64];
@@ -204,5 +204,7 @@ void init_queen_attacks(int square);
 
 int get_rank(int square);
 int get_file(int square);
+char get_piece(int x, int y) { return boardInfo[y][x]; };
+int get_squareFromCoord(int x, int y) { return y * 8 + x; };
 
 #endif
