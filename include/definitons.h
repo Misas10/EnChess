@@ -27,7 +27,7 @@
 #define B_ROOK 'R'
 #define EMPTY '.'
 
-typedef char Board[8][8];
+typedef char Board[64];
 
 typedef struct {
   SDL_Texture *tex;
@@ -211,7 +211,29 @@ void init_queen_attacks(int square);
 
 int get_rank(int square);
 int get_file(int square);
-char get_piece(int x, int y) { return boardInfo[y][x]; };
-int get_squareFromCoord(int x, int y) { return y * 8 + x; };
+int get_squareFromCoord(int x, int y) { return y * 8 + x; }
+char get_piece(int x, int y) { return boardInfo[get_squareFromCoord(x, y)]; }
+
+bool is_white(char piece) {
+  switch (piece) {
+    case W_PAWN:
+    case W_KING:
+    case W_QUEEN: 
+    case W_BISHOP:
+    case W_KNIGHT:
+    case W_ROOK:
+      return true;
+
+    default: return false;
+  }
+
+}
+
+bool is_black(char piece) { 
+  if(piece == EMPTY) 
+    return false;
+
+  return !is_white(piece); 
+}
 
 #endif

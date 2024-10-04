@@ -2,8 +2,6 @@
 
 #define RENDER_H
 #include "definitons.h"
-#include "events.h"
-#include <stdio.h>
 
 Image square;
 
@@ -86,7 +84,7 @@ int _getPos(int orientation) {
                              : orientation * square.width;
 }
 
-void _renderAllPieces(int line, int col) {
+void _renderAllPieces(char board[64], int line, int col) {
 
   char piece = get_piece(col, line);
 
@@ -164,7 +162,7 @@ void renderChessBoard(int width, int height) {
 
   for (int i = 0; i < 8; i++)
     for (int j = 0; j < 8; j++)
-      _renderAllPieces(i, j);
+      _renderAllPieces(boardInfo, i, j);
 }
 
 #endif
