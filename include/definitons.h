@@ -22,10 +22,10 @@
 #define B_PAWN 'P'
 #define B_QUEEN 'Q'
 #define B_KING 'K'
-#define B_BISHOP 'B' 
+#define B_BISHOP 'B'
 #define B_KNIGHT 'N'
 #define B_ROOK 'R'
-#define EMPTY '.' 
+#define EMPTY '.'
 
 typedef char Board[8][8];
 
@@ -37,9 +37,16 @@ typedef struct {
 
 typedef enum { white, black } Player;
 
+typedef struct MoveInfo {
+  int move[2];
+  struct MoveInfo *next;
+  struct MoveInfo *prev;
+} MoveInfo;
+
 typedef struct {
   Player player;
   int selected_pos; // from 0 to 63
+  MoveInfo moveInfo;
   SDL_bool isReversed;
   Uint64 bitboard;
 } GameData;

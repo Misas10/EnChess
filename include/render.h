@@ -88,10 +88,10 @@ int _getPos(int orientation) {
 
 void _renderAllPieces(int line, int col) {
 
-  char piece = boardInfo[line][col];
+  char piece = get_piece(col, line);
 
   if (piece != '.') {
-    int bit_pos = line * 8 + col;
+    int bit_pos = get_squareFromCoord(line, col); // line * 8 + col;
     gameData.bitboard = add_in_position(gameData.bitboard, bit_pos);
 
     int centered_x = (square.width - lightPawn.width) / 2;
@@ -122,20 +122,22 @@ void aux(int line, int col) {
 }
 
 void renderLegalMoves(int x, int y) {
-  int square = y * 8 + x;
+  int selected_x = get_file(gameData.selected_pos);
+  int selected_y = get_rank(gameData.selected_pos);
 
-  Uint64 pos_bit = add_in_position(0ULL, square);
+  int selected_square = get_squareFromCoord(selected_x, selected_y);
+  int current_square = get_squareFromCoord(x, y);
 
-  Uint64 pieceMove = 
-    get_legal_bitboard(square, get_piece(get_rank(gameData.selected_pos), get_file(gameData.selected_pos)));
+  Uint64 pos_bit = add_in_position(0ULL, current_square);
 
-  print_bitboard(pieceMove);
+  Uint64 pieceMove =
+      get_legal_bitboard(selected_square, get_piece(selected_x, selected_y));
 
-  int start_x = x * lightSquare.width;
-  int start_y = y * lightSquare.width;
+  // print_bitboard(pieceMove);
+  // print_bitboard(pieceMove & pos_bit);
 
-  if((pos_bit & pieceMove) != 0)
-    renderImage(legalMoves, start_x, start_y);
+  if ((pos_bit & pieceMove) != 0)
+    renderImage(legalMoves, _getPos(x), _getPos(y));
 }
 
 void renderChessBoard(int width, int height) {
@@ -147,9 +149,9 @@ void renderChessBoard(int width, int height) {
       aux(line, col);
 
   // Render selected move
-  if (gameData.selected_pos != -1){
-    int start_x = get_file(gameData.selected_pos) * lightSquare.width;
-    int start_y = get_rank(gameData.selected_pos) * lightSquare.height;
+  if (gameData.selected_pos != -1) {
+    int start_x = _getPos(get_file(gameData.selected_pos));
+    int start_y = _getPos(get_rank(gameData.selected_pos));
 
     renderImage(selected, start_x, start_y);
 
@@ -163,7 +165,6 @@ void renderChessBoard(int width, int height) {
   for (int i = 0; i < 8; i++)
     for (int j = 0; j < 8; j++)
       _renderAllPieces(i, j);
-    
 }
 
 #endif
