@@ -174,7 +174,16 @@ int get_rank(int square) { return square / 8; }
 
 int get_file(int square) { return square % 8; }
 
-Uint64 get_ray(int square, Direction dir) {
+Uint64 create_ray(int pos, Uint64 block) {
+  Uint64 block_cmp = add_in_position(0ULL, pos); 
+
+  if((block_cmp & block) == 0ULL)
+    return block_cmp;
+
+
+}
+
+Uint64 get_ray(int square, Direction dir, Uint64 block) {
   int rank = get_rank(square);
   int file = get_file(square);
 
@@ -187,8 +196,7 @@ Uint64 get_ray(int square, Direction dir) {
     // southEast ray
     for (t_file = file + 1, t_rank = rank + 1; t_file <= 7 && t_rank <= 7;
          t_file++, t_rank++) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
@@ -196,8 +204,7 @@ Uint64 get_ray(int square, Direction dir) {
   case northWest:
     for (t_file = file - 1, t_rank = rank - 1; t_file >= 0 && t_rank >= 0;
          t_file--, t_rank--) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
@@ -205,8 +212,7 @@ Uint64 get_ray(int square, Direction dir) {
   case southWest:
     for (t_file = file - 1, t_rank = rank + 1; t_file >= 0 && t_rank <= 7;
          t_file--, t_rank++) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
@@ -214,40 +220,35 @@ Uint64 get_ray(int square, Direction dir) {
   case northEast:
     for (t_file = file + 1, t_rank = rank - 1; t_file <= 7 && t_rank >= 0;
          t_file++, t_rank--) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
     // north
   case north:
     for (t_file = file, t_rank = rank - 1; t_rank >= 0; t_rank--) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
     // south
   case south:
     for (t_file = file, t_rank = rank + 1; t_rank <= 7; t_rank++) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
     // east
   case east:
     for (t_file = file - 1, t_rank = rank; t_file >= 0; t_file--) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
 
     // west
   case west:
     for (t_file = file + 1, t_rank = rank; t_file <= 7; t_file++) {
-      int pos = t_rank * 8 + t_file;
-      ray |= add_in_position(0ULL, pos);
+      ray |= create_ray(t_rank * 8 + t_file, block);
     }
     break;
   }
